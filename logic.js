@@ -44,31 +44,27 @@ listOfRays = [];
 function mouseClicked() {
     let click_location = [mouseX, mouseY];
     CreateRays(click_location);
-    // if (running) {
-    //     running = false;
-    // }
-    // else {
-    //     running = true;
-    // }
 }
 
 
 function draw() {
-    if (!running) {
-        clear();
-        background(0);
 
-        // stroke(0, 255, 0);
-        // strokeWeight(5);
-        // fill(0, 75, 185)
-        // ellipse(mouseX, mouseY, 20, 20);
+    clear();
+    background(0);
 
-        stroke(255, 5, 0);
-        strokeWeight(.5)
-        MoveRays(1);
+    stroke(255, 5, 0);
+    strokeWeight(.5)
+    MoveRays(1);
 
-        console.log("Number of rays = ", listOfRays.length)
-    }
 
+    console.log("Number of rays = ", listOfRays.length)
+    console.log(touches)
 }
 
+function showCoordinates(event) {   // For touchscreens
+    var touch_x = Math.round(event.touches[0].clientX);
+    var touch_y = Math.round(event.touches[0].clientY);
+
+    let touch_location = [touch_x, touch_y];
+    CreateRays(touch_location);
+}
