@@ -1,5 +1,7 @@
 // 9-15-22
 
+let running = false;
+
 let my_width = window.innerWidth * .99;
 let my_height = window.innerHeight * .97
 
@@ -11,11 +13,11 @@ function setup() {
     background(0);
 }
 
-function CreateRays() {
+function CreateRays(start_location) {
     for (let i = 0; i < 360; i++) {
-        let other_end = AdjustVectorEnd([center_x, center_y], i, 60)
+        let other_end = AdjustVectorEnd([start_location[0], start_location[1]], i, 60)
         listOfRays.push({
-            start: [center_x, center_y],
+            start: [start_location[0], start_location[1]],
             end: [other_end[0], other_end[1]],
             direction: i
         });
@@ -33,24 +35,34 @@ function MoveRays(speed) {  // Adjust line ends to simulate movement
 
 
 listOfRays = [];
-CreateRays();
+// CreateRays();
+
+function mouseClicked() {
+    let click_location = [mouseX, mouseY];
+    CreateRays(click_location);
+    // if (running) {
+    //     running = false;
+    // }
+    // else {
+    //     running = true;
+    // }
+}
 
 
 function draw() {
-    clear();
-    background(0);
+    if (!running) {
+        clear();
+        background(0);
 
-    stroke(0, 255, 0);
-    strokeWeight(5);
-    fill(0, 75, 185)
-    ellipse(center_x, center_y, 70, 70);
+        // stroke(0, 255, 0);
+        // strokeWeight(5);
+        // fill(0, 75, 185)
+        // ellipse(mouseX, mouseY, 20, 20);
 
+        stroke(255, 5, 0);
+        strokeWeight(.5)
+        MoveRays(1);
+    }
 
-
-    stroke(255, 5, 0);
-    strokeWeight(.5)
-    
-    
-    MoveRays(1);
 }
 
