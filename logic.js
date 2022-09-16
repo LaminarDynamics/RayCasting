@@ -30,6 +30,10 @@ function MoveRays(speed) {  // Adjust line ends to simulate movement
         ray.start = AdjustVectorEnd(ray.start, ray.direction, speed);
         ray.end = AdjustVectorEnd(ray.end, ray.direction, speed);
         line(ray.start[0], ray.start[1], ray.end[0], ray.end[1]);
+
+        if (ray.start[0] < 0 || ray.start[0] > my_width || ray.start[1] < 0 || ray.start[1] > my_height) {  // Check if rays exiting canvas and remove them for performance
+            listOfRays.splice(listOfRays.indexOf(ray), 1);
+        }
     });
 }
 
@@ -62,6 +66,8 @@ function draw() {
         stroke(255, 5, 0);
         strokeWeight(.5)
         MoveRays(1);
+
+        console.log("Number of rays = ", listOfRays.length)
     }
 
 }
