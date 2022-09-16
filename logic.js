@@ -1,4 +1,5 @@
 // 9-15-22
+
 let my_width = window.innerWidth * .99;
 let my_height = window.innerHeight * .97
 
@@ -10,39 +11,29 @@ function setup() {
     background(0);
 }
 
-let listOfLines = [];
-
-
-function CreateLines() {
+function CreateRays() {
     for (let i = 0; i < 360; i++) {
-        let other_end = AdjustVectorEnd([mouseX, mouseY], i, 300)
-        listOfLines.push({ start: [center_x, center_y], end: [other_end[0], other_end[1]] });
+        let other_end = AdjustVectorEnd([center_x, center_y], i, 60)
+        listOfRays.push({
+            start: [center_x, center_y],
+            end: [other_end[0], other_end[1]],
+            direction: i
+        });
     }
 }
 
-function AdjustVectorEnd(particle_pos, direction, magnatude) {
-    let line_end = VectorToCartesian(magnatude, direction)
-    line_end[0] += particle_pos[0] // Adjust for starting point
-    line_end[1] += particle_pos[1]
-    return line_end;
-}
 
-function VectorToCartesian(magnatude, direction) {
-    let x = magnatude * Math.cos((direction * Math.PI) / 180.0)
-    let y = magnatude * Math.sin((direction * Math.PI) / 180.0)
-    return [x, y]
-}
-
-function DrawLines() {
-    listOfLines.forEach(eachLine => {
-        line(center_x, center_y, eachLine.end[0], eachLine.end[1]);
+function MoveRays(speed) {  // Adjust line ends to simulate movement
+    listOfRays.forEach(ray => {
+        ray.start = AdjustVectorEnd(ray.start, ray.direction, speed);
+        ray.end = AdjustVectorEnd(ray.end, ray.direction, speed);
+        line(ray.start[0], ray.start[1], ray.end[0], ray.end[1]);
     });
 }
 
 
-
-
-
+listOfRays = [];
+CreateRays();
 
 
 function draw() {
@@ -52,13 +43,14 @@ function draw() {
     stroke(0, 255, 0);
     strokeWeight(5);
     fill(0, 75, 185)
-    ellipse(center_x, center_y, 80, 80);
+    ellipse(center_x, center_y, 70, 70);
 
-    listOfLines = [];
-    CreateLines();
+
 
     stroke(255, 5, 0);
     strokeWeight(.5)
-    DrawLines();
+    
+    
+    MoveRays(1);
 }
 
