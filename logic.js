@@ -35,15 +35,16 @@ function MoveRays(speed) {  // Adjust line ends to simulate movement
             listOfRays.splice(listOfRays.indexOf(ray), 1);
         }
 
-        CheckIntersections(ray);
+        CheckIntersections(ray, listOfWalls[0]);
     });
 }
 
 
 listOfRays = [];
 listOfWalls = [
-    [my_width * .75, my_height * .25, my_width * .75, my_height * .75],
-    [my_width * .75, my_height * .75, my_width * .25, my_height * .75]
+    // [my_width * .75, my_height * .25, my_width * .75, my_height * .75],
+    // [my_width * .75, my_height * .75, my_width * .25, my_height * .75],
+    [my_width * .25, my_height * .5, my_width * .85, my_height * .5]
 ];
 // console.log(listOfWalls)
 // CreateRays();
@@ -62,11 +63,25 @@ function DrawPermanents() {
 }
 
 
-function CheckIntersections(current_ray) {
-    // let rayToCheck = CreateLine([current_ray[0], current_ray[1]], [current_ray[2], current_ray[3]]);
-    // console.log(rayToCheck)
+function CheckIntersections(current_ray, wallToCheck) {
+
+    let wall_start = { x: wallToCheck[0], y: wallToCheck[1] };
+    let wall_end = { x: wallToCheck[2], y: wallToCheck[3] };
+
+    let ray_start = { x: current_ray.start[0], y: current_ray.start[1] };
+    let ray_end = { x: current_ray.end[0], y: current_ray.end[1] };
+
+    // let intersection = calculateIntersection(current_ray.start, current_ray.end, [wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]]);
+    // let intersection = calculateIntersection([testWall[0], testWall[1]], [testWall[2], testWall[3]], [wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]]);
+    let intersection = calculateIntersection(wall_start, wall_end, ray_start, ray_end);
+    console.log(intersection)
+    if (intersection != null) {
+        circle(intersection.x, intersection.y, 20);
+    }
 
 }
+
+
 
 
 function draw() {
