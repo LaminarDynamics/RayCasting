@@ -14,7 +14,7 @@ function setup() {
 }
 
 function CreateRays(start_location) {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 360; i++) {
         let other_end = AdjustVectorEnd([start_location[0], start_location[1]], i + 90, 60)
         listOfRays.push({
             start: [start_location[0], start_location[1]],
@@ -35,15 +35,15 @@ function MoveRays(speed) {  // Adjust line ends to simulate movement
             listOfRays.splice(listOfRays.indexOf(ray), 1);
         }
 
-        CheckIntersections(ray, listOfWalls[0]);
+        CheckIntersections(ray, listOfWalls);
     });
 }
 
 
 listOfRays = [];
 listOfWalls = [
-    // [my_width * .75, my_height * .25, my_width * .75, my_height * .75],
-    // [my_width * .75, my_height * .75, my_width * .25, my_height * .75],
+    [my_width * .75, my_height * .25, my_width * .75, my_height * .75],
+    [my_width * .75, my_height * .75, my_width * .25, my_height * .75],
     [my_width * .25, my_height * .5, my_width * .85, my_height * .5]
 ];
 // console.log(listOfWalls)
@@ -63,32 +63,37 @@ function DrawPermanents() {
 }
 
 
-function CheckIntersections(current_ray, wallToCheck) {
+function CheckIntersections(current_ray, wallsToCheck) {
 
     // Test
-    wallToCheck = [100, 0, 100, 100];
+    // wallToCheck = [100, 0, 100, 100];
     // current_ray.start = 0, 50;
     // current_ray.end = 100, 50;
 
-    let wall_start = { x: wallToCheck[0], y: wallToCheck[1] };
-    let wall_end = { x: wallToCheck[2], y: wallToCheck[3] };
+    wallsToCheck.forEach(wall => {
+        let intersection = calculateIntersection([wall[0], wall[1]], [wall[2], wall[3]], [current_ray.start[0], current_ray.start[1]], [current_ray.end[0], current_ray.end[1]]);
+        if (intersection != null) {
+            circle(intersection.x, intersection.y, 20);
+        }
+        console.log(intersection)
+
+    });
+
+    // let wall_start = { x: wallsToCheck[0], y: wallsToCheck[1] };
+    // let wall_end = { x: wallsToCheck[2], y: wallsToCheck[3] };
 
     // let ray_start = { x: current_ray.start[0], y: current_ray.start[1] };
     // let ray_end = { x: current_ray.end[0], y: current_ray.end[1] };
-    let ray_start = { x: 0, y: 50 };
-    let ray_end = { x: 200, y: 50 };
-    line(wallToCheck[0],wallToCheck[1],wallToCheck[2],wallToCheck[3]);
-    line(ray_start.x, ray_start.y, ray_end.x, ray_end.y)
+    // let ray_start = { x: 0, y: 50 };
+    // let ray_end = { x: 200, y: 50 };
+    // line(wallsToCheck[0],wallsToCheck[1],wallsToCheck[2],wallsToCheck[3]);
+    // line(ray_start.x, ray_start.y, ray_end.x, ray_end.y)
 
     // let intersection = calculateIntersection(current_ray.start, current_ray.end, [wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]]);
     // let intersection = calculateIntersection([testWall[0], testWall[1]], [testWall[2], testWall[3]], [wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]]);
-    let intersection = calculateIntersection(wall_start, wall_end, ray_start, ray_end);
-    let thisOne = math.intersect([wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]], [ray_start.x, ray_start.y], [ray_end.x, ray_end.y]);
-    console.log("THIS", thisOne);
-    // console.log(intersection)
-    if (intersection != null) {
-        circle(intersection.x, intersection.y, 20);
-    }
+    // let thisOne = math.intersect([wallsToCheck[0], wallsToCheck[1]], [wallsToCheck[2], wallsToCheck[3]], [ray_start.x, ray_start.y], [ray_end.x, ray_end.y]);
+    // console.log("THIS", thisOne);
+
 
 }
 

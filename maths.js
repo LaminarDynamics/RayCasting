@@ -16,24 +16,21 @@ function VectorToCartesian(magnatude, direction) {
 
 function calculateIntersection(p1, p2, p3, p4) {
 
-    let cross = intersects(p1[0], p1[1], p2[0], p2[1], p3[0], p3[1], p4[0], p4[1]);
-    // console.log(cross);
-
     // https://dirask.com/posts/JavaScript-calculate-intersection-point-of-two-lines-for-given-4-points-VjvnAj
-    var c2x = p3.x - p4.x; // (x3 - x4)
-    var c3x = p1.x - p2.x; // (x1 - x2)
-    var c2y = p3.y - p4.y; // (y3 - y4)
-    var c3y = p1.y - p2.y; // (y1 - y2)
+    var c2x = p3[0] - p4[0]; // (x3 - x4)
+    var c3x = p1[0] - p2[0]; // (x1 - x2)
+    var c2y = p3[1] - p4[1]; // (y3 - y4)
+    var c3y = p1[1] - p2[1]; // (y1 - y2)
 
     // down part of intersection point formula
     var d = c3x * c2y - c3y * c2x;
     if (d == 0) {
-        throw new Error('Number of intersection points is zero or infinity.');
+        // throw new Error('Number of intersection points is zero or infinity.');
         return null;
     }
     // upper part of intersection point formula
-    var u1 = p1.x * p2.y - p1.y * p2.x; // (x1 * y2 - y1 * x2)
-    var u4 = p3.x * p4.y - p3.y * p4.x; // (x3 * y4 - y3 * x4)
+    var u1 = p1[0] * p2[1] - p1[1] * p2[0]; // (x1 * y2 - y1 * x2)
+    var u4 = p3[0] * p4[1] - p3[1] * p4[0]; // (x3 * y4 - y3 * x4)
 
     // intersection point formula
 
