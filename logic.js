@@ -14,12 +14,12 @@ function setup() {
 }
 
 function CreateRays(start_location) {
-    for (let i = 0; i < 360; i++) {
-        let other_end = AdjustVectorEnd([start_location[0], start_location[1]], i, 60)
+    for (let i = 0; i < 3; i++) {
+        let other_end = AdjustVectorEnd([start_location[0], start_location[1]], i + 90, 60)
         listOfRays.push({
             start: [start_location[0], start_location[1]],
             end: [other_end[0], other_end[1]],
-            direction: i
+            direction: i + 90
         });
     }
 }
@@ -65,16 +65,27 @@ function DrawPermanents() {
 
 function CheckIntersections(current_ray, wallToCheck) {
 
+    // Test
+    wallToCheck = [100, 0, 100, 100];
+    // current_ray.start = 0, 50;
+    // current_ray.end = 100, 50;
+
     let wall_start = { x: wallToCheck[0], y: wallToCheck[1] };
     let wall_end = { x: wallToCheck[2], y: wallToCheck[3] };
 
-    let ray_start = { x: current_ray.start[0], y: current_ray.start[1] };
-    let ray_end = { x: current_ray.end[0], y: current_ray.end[1] };
+    // let ray_start = { x: current_ray.start[0], y: current_ray.start[1] };
+    // let ray_end = { x: current_ray.end[0], y: current_ray.end[1] };
+    let ray_start = { x: 0, y: 50 };
+    let ray_end = { x: 200, y: 50 };
+    line(wallToCheck[0],wallToCheck[1],wallToCheck[2],wallToCheck[3]);
+    line(ray_start.x, ray_start.y, ray_end.x, ray_end.y)
 
     // let intersection = calculateIntersection(current_ray.start, current_ray.end, [wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]]);
     // let intersection = calculateIntersection([testWall[0], testWall[1]], [testWall[2], testWall[3]], [wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]]);
     let intersection = calculateIntersection(wall_start, wall_end, ray_start, ray_end);
-    console.log(intersection)
+    let thisOne = math.intersect([wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]], [ray_start.x, ray_start.y], [ray_end.x, ray_end.y]);
+    console.log("THIS", thisOne);
+    // console.log(intersection)
     if (intersection != null) {
         circle(intersection.x, intersection.y, 20);
     }
