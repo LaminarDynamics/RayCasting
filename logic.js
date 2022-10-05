@@ -21,6 +21,7 @@ function CreateRays(start_location) {
             end: [other_end[0], other_end[1]],
             direction: i,
             index: ray_index,
+            color: "red",
             // intersections: CheckIntersections(listOfRays[listOfRays.length - 1])
             intersections: CheckIntersections(start_location[0], start_location[1], other_end[0], other_end[1])
         });
@@ -35,6 +36,14 @@ function MoveRays(speed) {  // Adjust line ends to simulate movement
     listOfRays.forEach(ray => {
         ray.start = AdjustVectorEnd(ray.start, ray.direction, speed);
         ray.end = AdjustVectorEnd(ray.end, ray.direction, speed);
+
+        if (ray.color != "red") {
+            stroke(0, 255, 50);
+        }
+
+        else {
+            stroke(255, 5, 0);
+        }
         line(ray.start[0], ray.start[1], ray.end[0], ray.end[1]);
 
         if (ray.start[0] < 0 || ray.start[0] > my_width || ray.start[1] < 0 || ray.start[1] > my_height) {  // Check if rays exiting canvas and remove them for performance
@@ -49,8 +58,12 @@ function MoveRays(speed) {  // Adjust line ends to simulate movement
 
             // console.log("Current ray stuff: ", ray)
 
-            if (Math.abs(check1) < 3 && Math.abs(check2) < 3) { // Check if ray hitting wall
-                listOfRays.splice(this.index, 1);    // Remove ray on hit
+            if (Math.abs(check1) < 3 && Math.abs(check2) < 3) { // Check if ray at intersection
+                // listOfRays.splice(ray.index, 1);    // Remove ray on hit
+                // listOfRays.splice(this.index, 1);    // Remove ray on hit
+                ray.color = "G"
+                // console.log("Removing = ", ray);    
+                // throw new console.error();
             }
             // console.log("RAY array Length ", listOfRays.length)
             // if (Math.abs(ray.start[0] - ray.intersection[0]) < 3 && Math.abs(ray.start[1] - ray.intersection[1]) < 3) { // Check if ray hitting wall
@@ -77,7 +90,8 @@ function mouseClicked() {
 }
 
 function DrawPermanents() {
-    stroke(0, 255, 50);
+    stroke(0, 55, 255); // Blue
+    // stroke(0, 255, 50); // Green
     strokeWeight(1);
     listOfWalls.forEach(wall => {
         line(wall[0], wall[1], wall[2], wall[3]);
@@ -126,9 +140,9 @@ function draw() {
     DrawPermanents();
 
 
-    stroke(255, 5, 0);
+    // stroke(255, 5, 0);
     strokeWeight(.5);
-    MoveRays(.1);
+    MoveRays(1);
 
 
     // Draw intersections
