@@ -6,12 +6,17 @@ let my_height = window.innerHeight * .97
 let center_x = my_width * .5;
 let center_y = my_height * .5;
 
+
+
 function setup() {
     createCanvas(my_width, my_height);
     background(0);
 }
 
 function CreateRays(start_location) {
+    let pop_sound = document.getElementById("myAudio");
+
+    pop_sound.play();
     for (let i = 0; i < 360; i++) {
         let other_end = AdjustVectorEnd([start_location[0], start_location[1]], i, 60)
         listOfRays.push({
@@ -88,14 +93,14 @@ function CheckIntersections(start_location_x, start_location_y, other_end_x, oth
     let listOfReturnIntersections = [];
 
     listOfWalls.forEach(wall => {
-    
+
         let intersection = calculateIntersection([wall[0], wall[1]], [wall[2], wall[3]], [start_location_x, start_location_y], [other_end_x, other_end_y]);
         if (intersection != null) {
             if (intersection.x > 0 && intersection.x < my_width && intersection.y > 0 && intersection.y < my_height) {  // Only add intersection if in display area
                 if (intersection.x > wall[0] && intersection.x < wall[2] || intersection.y > wall[1] && intersection.y < wall[3]) { // Check actual line, not extended line
-                     listOfReturnIntersections.push([intersection.x, intersection.y]);
+                    listOfReturnIntersections.push([intersection.x, intersection.y]);
                 }
-               
+
             }
         }
 
