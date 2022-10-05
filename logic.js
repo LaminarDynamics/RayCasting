@@ -15,12 +15,18 @@ function setup() {
 
 function CreateRays(start_location) {
     for (let i = 0; i < 360; i++) {
-        let other_end = AdjustVectorEnd([start_location[0], start_location[1]], i + 90, 60)
+        let other_end = AdjustVectorEnd([start_location[0], start_location[1]], i, 60)
         listOfRays.push({
             start: [start_location[0], start_location[1]],
             end: [other_end[0], other_end[1]],
-            direction: i + 90
+            direction: i,
+            index: ray_index,
+            // intersections: CheckIntersections(listOfRays[listOfRays.length - 1])
+            intersections: CheckIntersections(start_location[0], start_location[1], other_end[0], other_end[1])
         });
+        ray_index++;
+        // console.log("List of RAYS: ", listOfRays)
+
     }
 }
 
@@ -35,19 +41,35 @@ function MoveRays(speed) {  // Adjust line ends to simulate movement
             listOfRays.splice(listOfRays.indexOf(ray), 1);
         }
 
-        CheckIntersections(ray, listOfWalls);
+        // console.log(ray.intersections)
+
+        ray.intersections.forEach(intersection => {
+            let check1 = Math.abs(ray.end[0] - intersection[0]);
+            let check2 = Math.abs(ray.end[1] - intersection[1]);
+
+            // console.log("Current ray stuff: ", ray)
+
+            if (Math.abs(check1) < 3 && Math.abs(check2) < 3) { // Check if ray hitting wall
+                listOfRays.splice(this.index, 1);    // Remove ray on hit
+            }
+            // console.log("RAY array Length ", listOfRays.length)
+            // if (Math.abs(ray.start[0] - ray.intersection[0]) < 3 && Math.abs(ray.start[1] - ray.intersection[1]) < 3) { // Check if ray hitting wall
+            //     listOfRays.pop(ray);    // Remove ray on hit
+            // }
+        });
+
     });
 }
 
-
-listOfRays = [];
-listOfWalls = [
+let ray_index = 0;
+let listOfRays = [];
+let listOfIntersections = [];
+let listOfWalls = [
     [my_width * .75, my_height * .25, my_width * .75, my_height * .75],
     [my_width * .75, my_height * .75, my_width * .25, my_height * .75],
     [my_width * .25, my_height * .5, my_width * .85, my_height * .5]
 ];
-// console.log(listOfWalls)
-// CreateRays();
+
 
 function mouseClicked() {
     let click_location = [mouseX, mouseY];
@@ -63,38 +85,34 @@ function DrawPermanents() {
 }
 
 
-function CheckIntersections(current_ray, wallsToCheck) {
+function CheckIntersections(start_location_x, start_location_y, other_end_x, other_end_y) {
 
-    // Test
-    // wallToCheck = [100, 0, 100, 100];
-    // current_ray.start = 0, 50;
-    // current_ray.end = 100, 50;
+    let listOfReturnIntersections = [];
 
-    wallsToCheck.forEach(wall => {
-        let intersection = calculateIntersection([wall[0], wall[1]], [wall[2], wall[3]], [current_ray.start[0], current_ray.start[1]], [current_ray.end[0], current_ray.end[1]]);
+    listOfWalls.forEach(wall => {
+        // let intersection = calculateIntersection([wall[0], wall[1]], [wall[2], wall[3]], [current_ray.start[0], current_ray.start[1]], [current_ray.end[0], current_ray.end[1]]);
+        let intersection = calculateIntersection([wall[0], wall[1]], [wall[2], wall[3]], [start_location_x, start_location_y], [other_end_x, other_end_y]);
         if (intersection != null) {
-            circle(intersection.x, intersection.y, 20);
+            if (intersection.x > 0 && intersection.x < my_width && intersection.y > 0 && intersection.y < my_height) {  // Only add intersection if in display area
+                // circle(intersection.x, intersection.y, 20);
+                // intersection_locations = {
+                //     x: intersection.x,
+                //     y: intersection.y,
+                //     hit: false,
+                //     intersection_index: current_ray.index
+                // }
+                // current_ray.intersections += [intersection.x, intersection.y];
+                listOfReturnIntersections.push([intersection.x, intersection.y]);
+                // console.log(current_ray.intersections)
+                // listOfIntersections.push(intersection_locations)
+                // console.log("Stuff returning: ", listOfReturnIntersections)
+
+            }
         }
-        console.log(intersection)
 
     });
 
-    // let wall_start = { x: wallsToCheck[0], y: wallsToCheck[1] };
-    // let wall_end = { x: wallsToCheck[2], y: wallsToCheck[3] };
-
-    // let ray_start = { x: current_ray.start[0], y: current_ray.start[1] };
-    // let ray_end = { x: current_ray.end[0], y: current_ray.end[1] };
-    // let ray_start = { x: 0, y: 50 };
-    // let ray_end = { x: 200, y: 50 };
-    // line(wallsToCheck[0],wallsToCheck[1],wallsToCheck[2],wallsToCheck[3]);
-    // line(ray_start.x, ray_start.y, ray_end.x, ray_end.y)
-
-    // let intersection = calculateIntersection(current_ray.start, current_ray.end, [wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]]);
-    // let intersection = calculateIntersection([testWall[0], testWall[1]], [testWall[2], testWall[3]], [wallToCheck[0], wallToCheck[1]], [wallToCheck[2], wallToCheck[3]]);
-    // let thisOne = math.intersect([wallsToCheck[0], wallsToCheck[1]], [wallsToCheck[2], wallsToCheck[3]], [ray_start.x, ray_start.y], [ray_end.x, ray_end.y]);
-    // console.log("THIS", thisOne);
-
-
+    return listOfReturnIntersections;
 }
 
 
@@ -110,11 +128,14 @@ function draw() {
 
     stroke(255, 5, 0);
     strokeWeight(.5);
-    MoveRays(1);
+    MoveRays(.1);
 
 
-    // console.log("Number of rays = ", listOfRays.length)
-    // console.log(touches)
+    // Draw intersections
+    // listOfIntersections.forEach(intersect => {
+    //     circle(intersect.x, intersect.y, 20)
+    // });
+
 }
 
 
