@@ -60,9 +60,10 @@ function MoveRays(speed) {  // Adjust line ends to simulate movement
 let ray_index = 0;
 let listOfRays = [];
 let listOfIntersections = [];
-let listOfWalls = [
-    [my_width * .75, my_height * .25, my_width * .75, my_height * .75],
-    [my_width * .75, my_height * .75, my_width * .25, my_height * .75],
+let listOfWalls = [ // All walls must be draw left to right/top to bottom for collision logic to work
+    [my_width * .75, my_height * .25, my_width * .75, my_height * .75], // Vertical
+    [my_width * .25, my_height * .25, my_width * .25, my_height * .75], // Vertical
+    [my_width * .25, my_height * .75, my_width * .75, my_height * .75],
     [my_width * .25, my_height * .5, my_width * .85, my_height * .5]
 ];
 
@@ -91,7 +92,10 @@ function CheckIntersections(start_location_x, start_location_y, other_end_x, oth
         let intersection = calculateIntersection([wall[0], wall[1]], [wall[2], wall[3]], [start_location_x, start_location_y], [other_end_x, other_end_y]);
         if (intersection != null) {
             if (intersection.x > 0 && intersection.x < my_width && intersection.y > 0 && intersection.y < my_height) {  // Only add intersection if in display area
-                listOfReturnIntersections.push([intersection.x, intersection.y]);
+                if (intersection.x > wall[0] && intersection.x < wall[2] || intersection.y > wall[1] && intersection.y < wall[3]) { // Check actual line, not extended line
+                     listOfReturnIntersections.push([intersection.x, intersection.y]);
+                }
+               
             }
         }
 
@@ -111,7 +115,7 @@ function draw() {
 
     // stroke(255, 5, 0);
     strokeWeight(.5);
-    MoveRays(.1);
+    MoveRays(1);
 }
 
 
