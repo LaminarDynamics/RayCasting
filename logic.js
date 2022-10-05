@@ -113,7 +113,6 @@ function draw() {
 
     DrawPermanents();
 
-    // stroke(255, 5, 0);
     strokeWeight(.5);
     MoveRays(1);
 }
