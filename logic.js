@@ -14,9 +14,9 @@ function setup() {
 }
 
 function CreateRays(start_location) {
-    let pop_sound = document.getElementById("myAudio");
+    // let pop_sound = document.getElementById("myAudio");
 
-    pop_sound.play();
+    // pop_sound.play();
     for (let i = 0; i < 360; i++) {
         let other_end = AdjustVectorEnd([start_location[0], start_location[1]], i, 60)
         listOfRays.push({
@@ -25,6 +25,7 @@ function CreateRays(start_location) {
             direction: i,
             index: ray_index,
             color: "red",
+            end_intersection_contact: false,
             intersections: CheckIntersections(start_location[0], start_location[1], other_end[0], other_end[1])
         });
         ray_index++;
@@ -35,7 +36,11 @@ function CreateRays(start_location) {
 function MoveRays(speed) {  // Adjust line ends to simulate movement
     listOfRays.forEach(ray => {
         ray.start = AdjustVectorEnd(ray.start, ray.direction, speed);
-        ray.end = AdjustVectorEnd(ray.end, ray.direction, speed);
+
+        if (ray.end_intersection_contact == false) {    // If line end at wall
+            ray.end = AdjustVectorEnd(ray.end, ray.direction, speed);
+        }
+
 
         if (ray.color != "red") {
             stroke(0, 255, 50);
@@ -51,11 +56,21 @@ function MoveRays(speed) {  // Adjust line ends to simulate movement
         }
 
         ray.intersections.forEach(intersection => {
-            let check1 = Math.abs(ray.end[0] - intersection[0]);
-            let check2 = Math.abs(ray.end[1] - intersection[1]);
+            // Line End
+            let check3 = Math.abs(ray.end[0] - intersection[0]);
+            let check4 = Math.abs(ray.end[1] - intersection[1]);
 
-            if (Math.abs(check1) < 3 && Math.abs(check2) < 3) { // Check if ray at intersection
-                ray.color = "G"
+            if (Math.abs(check3) < 3 && Math.abs(check4) < 3) { // Check if ray end at intersection
+                ray.color = "G";
+                ray.end_intersection_contact = true;
+            }
+
+            // Line start
+            let check1 = Math.abs(ray.start[0] - intersection[0]);
+            let check2 = Math.abs(ray.start[1] - intersection[1]);
+
+            if (Math.abs(check1) < 3 && Math.abs(check2) < 3) { // Check if ray start at intersection
+                listOfRays.splice(listOfRays.indexOf(ray), 1); // Remove ray if start at intersection
             }
         });
 
